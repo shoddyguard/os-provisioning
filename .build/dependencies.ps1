@@ -22,7 +22,7 @@ $requirements = @{
 $AcceptedExitCodes = @(0,1641,3010)
 try
 {
-    Get-Command choco -ErrorAction stop
+    $choco = Get-Command choco -ErrorAction stop
 }
 catch
 {
@@ -37,7 +37,7 @@ foreach ($requirement in $requirements.GetEnumerator())
     }
     else
     {
-        $installargs = @('install', $requirement.key)
+        $installargs = @('install', $requirement.key,'-y')
         if ($requirement.value -ne 'latest')
         {
             $installargs += "--version $($requirement.value)"
@@ -47,10 +47,11 @@ foreach ($requirement in $requirements.GetEnumerator())
         {
             throw "failed to install $($requirement.key)"
         }
+        continue
     }
     if (($requirement.value -eq 'latest') -and ($VersionCheck -ne $requirement.value))
     {
-        $updateresult = Start-Process "choco" -ArgumentList "update $($requirement.key)" -PassThru -NoNewWindow -Wait
+        $updateresult = Start-Process "choco" -ArgumentList "upgrade $($requirement.key) -y" -PassThru -NoNewWindow -Wait
         if ($updateresult.ExitCode -notin $AcceptedExitCodes)
         {
             throw "failed to update $($requirement.key)"
