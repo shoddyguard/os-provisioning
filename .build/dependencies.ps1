@@ -34,6 +34,7 @@ foreach ($requirement in $requirements.GetEnumerator())
     if ($InstallCheck)
     {
         $VersionCheck = $InstallCheck -replace ("^$($requiremnet.key)\|")
+        $AvailableVersion = (choco list $requirement.key -r -e) -replace ("^$($requiremnet.key)\|")
     }
     else
     {
@@ -49,7 +50,7 @@ foreach ($requirement in $requirements.GetEnumerator())
         }
         continue
     }
-    if (($requirement.value -eq 'latest') -and ($VersionCheck -ne $requirement.value))
+    if (($requirement.value -eq 'latest') -and ($VersionCheck -ne $AvailableVersion))
     {
         $updateresult = Start-Process "choco" -ArgumentList "upgrade $($requirement.key) -y" -PassThru -NoNewWindow -Wait
         if ($updateresult.ExitCode -notin $AcceptedExitCodes)
