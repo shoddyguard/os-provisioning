@@ -1,0 +1,21 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# Simple Vagrantfile enabling you to be able to play with Docker without having to fight with Virtualbox on Windows
+
+Vagrant.configure("2") do |config|
+    config.vm.provider "virtualbox" do |vb|
+      vb.memory = "4096"
+      vb.cpus = 4
+    end
+    # for Linux containers
+    config.vm.define "ubuntu" do |ub|
+      ub.vm.box = "bento/ubuntu-18.04"
+    end
+    # for Windows containers
+    config.vm.define "windows" do |wi|
+      wi.vm.box = "gusztavvargadr/windows-server"
+      wi.vm.box_version = "1809.0.2006.standard-core"
+      wi.vm.synced_folder ".", "c:\\vagrant"
+    end
+  end
