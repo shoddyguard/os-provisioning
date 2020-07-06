@@ -6,3 +6,6 @@ crash.log
 
 # For built boxes
 *.box
+
+# Vagrant stuff (for testing)
+*.vagrant
