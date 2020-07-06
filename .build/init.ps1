@@ -3,4 +3,4 @@
 "$PSScriptRoot\dependencies.ps1"
 
 # Import the provisioning module
-Import-Module '.\Provisioning\Provisioning.psm1'
+Import-Module "$PSScriptRoot\Provisioning\Provisioning.psm1"
