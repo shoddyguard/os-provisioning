@@ -1,7 +1,7 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-# Simple Vagrantfile enabling you to be able to play with Docker without having to fight with Virtualbox on Windows
+# Simple Vagrantfile enabling you to be able to play with this repo without installing things on your machine
 
 Vagrant.configure("2") do |config|
     config.vm.provider "virtualbox" do |vb|

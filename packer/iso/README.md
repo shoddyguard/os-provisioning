@@ -1,0 +1,2 @@
+This directory can be used to store any ISO's that you wish to use with packer.
+The default packer configurations in this module all refrence this folder (eg `"iso_url": "../../../iso/server2019.iso"`)

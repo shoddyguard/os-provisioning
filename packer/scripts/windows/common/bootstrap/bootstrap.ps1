@@ -1,7 +1,7 @@
 Set-ExecutionPolicy Unrestricted -Scope LocalMachine -Force -ErrorAction Ignore
 $ErrorActionPreference = 'Stop'
 
-# dot source our functions
+# dot source our functions (should always be in the a:\ drive)
 . a:\functions.ps1
 
 Install-Chocolatey

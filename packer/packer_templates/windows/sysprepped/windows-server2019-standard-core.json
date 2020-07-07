@@ -37,7 +37,7 @@
             "winrm_timeout": "3h",
             "shutdown_command": "{{ user `sysprep_command` }}",
             "guest_additions_mode": "disable",
-            "output_directory": "../../../../output/windows-server2019-core"
+            "output_directory": "../../../../output/windows-server2019-standard-core"
         }
     ],
     "provisioners": [
