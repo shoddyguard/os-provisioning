@@ -1,0 +1,65 @@
+{
+    "builders": [
+        {
+            "name": "windows-server2019",
+            "type": "virtualbox-iso",
+            "vboxmanage": [
+                [
+                    "modifyvm",
+                    "{{.Name}}",
+                    "--memory",
+                    "{{user `ram`}}"
+                ],
+                [
+                    "modifyvm",
+                    "{{.Name}}",
+                    "--cpus",
+                    "{{user `cpus`}}"
+                ]
+            ],
+            "disk_size": "{{ user `virtualbox_disk_size` }}",
+            "guest_os_type": "Windows2019_64",
+            "iso_url": "{{user `iso_url`}}",
+            "iso_checksum_type": "{{user `iso_checksum_type`}}",
+            "iso_checksum": "{{user `iso_checksum`}}",
+            "floppy_files": [
+                "../../../files/windows/server2019/standard/autounattend.xml",
+                "../../../scripts/windows/common/bootstrap"
+            ],
+            "headless": "{{user `headless`}}",
+            "boot_wait": "10m",
+            "communicator": "winrm",
+            "winrm_username": "{{ user `winrm_username` }}",
+            "winrm_password": "{{ user `winrm_password` }}",
+            "winrm_port": 5986,
+            "winrm_use_ssl": true,
+            "winrm_insecure": true,
+            "winrm_timeout": "3h",
+            "shutdown_command": "{{ user `sysprep_command` }}",
+            "guest_additions_mode": "disable",
+            "output_directory": "../../../../output/windows-server2019"
+        }
+    ],
+    "provisioners": [
+        {
+            "type": "powershell",
+            "scripts": [
+                "../../../scripts/windows/common/copy-puppetprovisioning.ps1",
+                "../../../scripts/windows/common/stage-sysprep.ps1"
+            ]
+        }
+    ],
+    "variables": {
+        "headless": "true",
+        "iso_checksum": "",
+        "iso_url": "../../../iso/server2019.iso",
+        "iso_checksum_type": "",
+        "version": "0",
+        "ram": "4096",
+        "cpus": "2",
+        "virtualbox_disk_size": "120000",
+        "winrm_username": "Administrator",
+        "winrm_password": "ItsaSecrettoEverybody1234",
+        "sysprep_command": "psexec -accepteula -s C:/windows/system32/sysprep/sysprep.exe /generalize /oobe /quiet /shutdown"
+    }
+}

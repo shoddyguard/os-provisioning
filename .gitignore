@@ -9,3 +9,9 @@ crash.log
 
 # Vagrant stuff (for testing)
 *.vagrant
+
+# Ignore any iso's that end up here
+*.iso
+
+# Ignore our output- directories from builds.
+output-*/

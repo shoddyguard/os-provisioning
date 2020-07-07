@@ -1,0 +1,3 @@
+# So doing a sysprep kills the network driver which obviously kills WinRM...
+# So we'll run it as the shutdown command in Packer, we'll need to do this as SYSTEM though which requires PSEXEC.
+choco install psexec --confirm --ignore-checksums
