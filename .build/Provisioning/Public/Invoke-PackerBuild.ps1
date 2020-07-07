@@ -63,11 +63,13 @@ function Invoke-PackerBuild
     }
     if ($TemplateName -match ".json$")
     {
+        Write-Verbose "Correcting template name."
         $TemplateName = $TemplateName -replace ".json$", ''
     }
+    Write-Verbose "Searching for template file $TemplateName.json in $TemplateDirectory and subfolders"
     try
     {
-        $TemplatePath = Get-ChildItem $TemplateDirectory -Filter $TemplateName -Recurse -ErrorAction Stop | Select-Object -ExpandProperty ""
+        $TemplatePath = Get-ChildItem $TemplateDirectory -Filter "$TemplateName.json" -Recurse -ErrorAction Stop
     }
     catch
     {
@@ -77,6 +79,8 @@ function Invoke-PackerBuild
     {
         throw "No templates found."
     }
+    # With how we currently have our naming set-up we could indeed get multiple templates with the same name.
+    # We will need to come up with a better way of filtering this in the future - perhaps drop "windows-" from the start of the template and have it start "sysprepped-" or similar?
     if ($TemplatePath.count -gt 1)
     {
         throw "Too many templates returned, expected: 1, got: $($TemplatePath.count)"
@@ -85,10 +89,13 @@ function Invoke-PackerBuild
     $Vars = @("iso_url=$ISOURL","output_directory=$OutputDirectory")
     if ($ISOChecksum)
     {
-        $Vars += "iso_checksum=$ISOChecksum"
         if ($ISOChecksumType)
         {
-            $Vars += "so_checksum_type=$ISOChecksumType"
+            $Vars += "iso_checksum=$($ISOChecksumType):$ISOChecksum"
+        }
+        else
+        {
+            $Vars += "iso_checksum=$ISOChecksum"
         }
     }
     if ($PackerVariables)
