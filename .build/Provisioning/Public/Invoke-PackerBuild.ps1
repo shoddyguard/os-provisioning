@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-    Short description
+    Starts a Packer build
 .DESCRIPTION
     Long description
 .EXAMPLE
@@ -67,7 +67,7 @@ function Invoke-PackerBuild
     }
     try
     {
-        $TemplatePath = Get-ChildItem $TemplatePath -Filter $TemplateName -Recurse -ErrorAction Stop | Select-Object -ExpandProperty ""
+        $TemplatePath = Get-ChildItem $TemplateDirectory -Filter $TemplateName -Recurse -ErrorAction Stop | Select-Object -ExpandProperty ""
     }
     catch
     {
@@ -93,6 +93,14 @@ function Invoke-PackerBuild
     }
     if ($PackerVariables)
     {
+        # Woule be nice to just remove these in future, but for now we'll throw an exception.
+        foreach ($PackerVariable in $PackerVariables)
+        {
+            if ($PackerVariable -match "(^\`"|^\')|(\`"$|\'$)")
+            {
+                throw "Variable $PackerVariable appears to contain $($Matches.0), variables must not start/end with a single/double quotation or contain -var."
+            }
+        }
         $Vars += $PackerVariables
     }
     $PackerArgs = @("build")
