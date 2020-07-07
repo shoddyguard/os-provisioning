@@ -37,7 +37,7 @@
             "winrm_timeout": "3h",
             "shutdown_command": "{{ user `sysprep_command` }}",
             "guest_additions_mode": "disable",
-            "output_directory": "../../../../output/windows-server2019-standard-core"
+            "output_directory": "{{ user `output_directory` }}"
         }
     ],
     "provisioners": [
@@ -54,6 +54,7 @@
         "iso_checksum": "",
         "iso_url": "../../../iso/server2019.iso",
         "iso_checksum_type": "",
+        "output_directory": "../../../../output/windows-server2019-standard-core",
         "version": "0",
         "ram": "4096",
         "cpus": "2",
