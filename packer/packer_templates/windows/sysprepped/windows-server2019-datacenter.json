@@ -20,7 +20,6 @@
             "disk_size": "{{ user `virtualbox_disk_size` }}",
             "guest_os_type": "Windows2019_64",
             "iso_url": "{{user `iso_url`}}",
-            "iso_checksum_type": "{{user `iso_checksum_type`}}",
             "iso_checksum": "{{user `iso_checksum`}}",
             "floppy_files": [
                 "../../../files/windows/server2019/datacenter/autounattend.xml",
@@ -53,7 +52,6 @@
         "headless": "true",
         "iso_checksum": "",
         "iso_url": "../../../iso/server2019.iso",
-        "iso_checksum_type": "",
         "output_directory": "../../../../output/windows-server2019-datacenter",
         "version": "0",
         "ram": "4096",
