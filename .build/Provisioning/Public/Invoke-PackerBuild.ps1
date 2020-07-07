@@ -66,7 +66,7 @@ function Invoke-PackerBuild
         Write-Verbose "Correcting template name."
         $TemplateName = $TemplateName -replace ".json$", ''
     }
-    Write-Verbose "Searching for template file $TemplateName.json in $TemplateDirectory and subfolders"
+    Write-Verbose "Searching for template file $TemplateName.json in $TemplateDirectory"
     try
     {
         $TemplatePath = Get-ChildItem $TemplateDirectory -Filter "$TemplateName.json" -Recurse -ErrorAction Stop
@@ -86,6 +86,7 @@ function Invoke-PackerBuild
         throw "Too many templates returned, expected: 1, got: $($TemplatePath.count)"
     }
     $OutputDirectory = "$OutputPath\$TemplateName"
+    Write-Verbose "OutputDirectory set to $OutputDirectory"
     $Vars = @("iso_url=$ISOURL","output_directory=$OutputDirectory")
     if ($ISOChecksum)
     {
@@ -117,9 +118,10 @@ function Invoke-PackerBuild
     }
     $PackerArgs += (Convert-Path $TemplatePath.PSPath).ToString()
     Write-Debug "Packer arguments:`n$PackerArgs"
+    Write-Verbose "Calling Packer with $PackerArgs"
     try
     {
-        $PackerProc = Start-Process "packer" -ArgumentList $PackerArgs -Wait -PassThru -NoNewWindow -ErrorAction Stop
+        $PackerProc = Start-Process "packer" -ArgumentList $PackerArgs -WorkingDirectory $TemplatePath.PSParentPath -Wait -PassThru -NoNewWindow -ErrorAction Stop
     }
     catch
     {
