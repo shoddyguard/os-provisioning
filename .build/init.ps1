@@ -4,3 +4,5 @@
 
 # Import the provisioning module
 Import-Module "$PSScriptRoot\Provisioning\Provisioning.psm1"
+
+Write-Host "This is a test: $env:TEST_STRING"
