@@ -54,7 +54,7 @@
         "iso_url": "../../../iso/server2019.iso",
         "output_directory": "../../../output/windows-server2019-standard-core",
         "version": "0",
-        "ram": "4096",
+        "ram": "2048",
         "cpus": "2",
         "virtualbox_disk_size": "120000",
         "winrm_username": "Administrator",
