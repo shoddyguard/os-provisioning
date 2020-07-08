@@ -57,7 +57,5 @@ foreach ($requirement in $requirements.GetEnumerator())
         {
             throw "failed to upgrade $($requirement.key)"
         }
-    }
-    # Reload PATH in case it's changed
-    $env:Path = [System.Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path", "User") 
+    } 
 }
