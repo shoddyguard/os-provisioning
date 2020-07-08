@@ -1,8 +1,12 @@
 #Requires -RunAsAdministrator
+<#
+.DESCRIPTION
+    This script is ensures the build environment is initialized. 
+#>
 [CmdletBinding()]
 param ()
 # Ensure chocolatey doesn't display downloads on Teamcity builds
-if ($env:TEAMCITY_VERSION -ne $null)
+if ($env:TEAMCITY_VERSION)
 {
     choco feature disable -n=showDownloadProgress
 }

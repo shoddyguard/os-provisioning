@@ -56,7 +56,7 @@
         "version": "0",
         "ram": "2048",
         "cpus": "2",
-        "virtualbox_disk_size": "120000",
+        "virtualbox_disk_size": "40000",
         "winrm_username": "Administrator",
         "winrm_password": "ItsaSecrettoEverybody1234",
         "sysprep_command": "psexec -accepteula -s C:/windows/system32/sysprep/sysprep.exe /generalize /oobe /quiet /shutdown"
