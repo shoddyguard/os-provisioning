@@ -17,7 +17,7 @@
                   <CreatePartitions>
                       <CreatePartition wcm:action="add">
                           <Order>1</Order>
-                          <Size>80000</Size>
+                          <Size>30000</Size>
                           <Type>Primary</Type>
                       </CreatePartition>
                       <CreatePartition wcm:action="add">
