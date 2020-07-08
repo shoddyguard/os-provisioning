@@ -1,4 +1,6 @@
 #Requires -RunAsAdministrator
+[CmdletBinding()]
+param ()
 # Ensure our dependencies are present
 . "$PSScriptRoot\dependencies.ps1"
 

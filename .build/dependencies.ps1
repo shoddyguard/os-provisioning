@@ -1,8 +1,10 @@
+#Requires -RunAsAdministrator
 <#
 .SYNOPSIS
     Simple script for ensuring the dependencies for the build tasks are installed and working.
 #>
-#Requires -RunAsAdministrator
+[CmdletBinding()]
+param ()
 Write-Host "Ensuring dependencies are installed"
 $requirements = @{
     mdt        = 'latest'
