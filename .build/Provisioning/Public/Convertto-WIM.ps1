@@ -23,11 +23,6 @@ function ConvertTo-WIM
         [string]
         $PackerOutput,
 
-        # The path to where the WIM should be stored
-        [Parameter(Mandatory = $true)]
-        [string]
-        $WIMPath,
-
         # Operating System
         [Parameter(Mandatory = $true)]
         [ValidateSet('Server 2019', 'Windows 10', 'Server 2016', 'Server 2012r2', 'Server 2012')]
@@ -40,30 +35,57 @@ function ConvertTo-WIM
         [String]
         $OSIndentifier,
 
-        # The location to where VirtualBox is installed
+        # The output directory to use
         [Parameter(Mandatory = $false)]
         [String]
-        $VBoxLocation = 'C:\Program Files\Oracle\VirtualBox'
+        $OutputPath = "$env:BuildOutputPath",
+
+        # This cmdlet will try to find VirtualBox automagically, however if it fails you may have to provide the path using this parameter
+        [Parameter(Mandatory = $false)]
+        [String]
+        $VBoxManageLocation
     )
-    $VBoxManage = "$VboxLocation\VBoxManage.exe"
-    if (!(Test-Path $VBoxManage))
+    if (!(Test-Path $OutputPath))
     {
-        throw "Couldn't fine VBoxManage.exe in $VboxLocation"
+        throw "Output path $OutputPath does not exist"
     }
-    if ($WimPath.ToLower() -match '\.wim$')
+    if (!$VBoxManageLocation)
     {
-        throw "WimPath should be a directory, not a WIM image"
+        try
+        {
+            $VBoxManageLocation = Get-Command 'VBoxManage.exe' -ErrorAction Stop | Select-Object -ExpandProperty Source
+        }
+        catch
+        {
+            throw "Unable to find VBoxManage.exe in PATH. VBoxManageLocation parameter required."
+        }
+    }
+    else
+    {
+        if (!(Test-Path $VBoxManageLocation))
+        {
+            throw "Couldn't fine VBoxManage.exe at $VBoxManageLocation"
+        }
+    }
+    # We throw here but in the future it would be nice to just account for this and remove the extension
+    if ($OutputPath.ToLower() -match '\.wim$')
+    {
+        throw "OutputPath should be a directory, not a WIM image"
     }
     $VMDKName = Split-Path $PackerOutput -Leaf
     $PackerFile = Get-ChildItem $PackerOutput -Filter "*.vmdk" | Select-Object -ExpandProperty FullName
     If ($PackerFile.count -gt 1)
     {
-        throw "Too many VMDKs in $PackerOutput, expected 1 got $($PackerFile.count)"
+        throw "Too many VMDKs in $PackerOutput, expected: 1 got: $($PackerFile.count)"
+    }
+    if (!$PackerFile)
+    {
+        throw "Found 0 matches in $PackerOutput, expected: 1 got: 0"
     }
     Write-Host "Converting $VMDKName to WIM"
 
     $TempDirName = ( -join ((0x30..0x39) + ( 0x41..0x5A) + ( 0x61..0x7A) | Get-Random -Count 8 | ForEach-Object { [char]$_ }))
-    $TempDir = "$PSScriptRoot\..\output\$TempDirName"
+    $TempDir = "$OutputPath\$TempDirName"
     $Count = 0
     while ((Test-Path $TempDir) -and $Count -lt 10) 
     {
@@ -74,7 +96,7 @@ function ConvertTo-WIM
     }
     if ($Count -ge 10)
     {
-        throw "Failed to create a unique temp directory."
+        throw "Failed to create a unique temp directory within alotted limit (10)."
     }
 
     Write-Verbose "Creating temp directory $TempDir"
@@ -96,7 +118,7 @@ function ConvertTo-WIM
     $VHDPath = "$TempDir\$OSString.vhd"
     $MountPath = "$TempDir\Mount"
     $DateString = (Get-Date -Format yyyy-MM-dd).ToString()
-    $WIMOutput = "$WimPath\$OSString.WIM"
+    $WIMOutput = "$OutputPath\$OSString.WIM"
     Write-Verbose "Creating temporary mount at $MountPath to be used for the WIM"
     try
     {
@@ -107,7 +129,7 @@ function ConvertTo-WIM
         throw "Failed to create temp mount directory.$($_.Exception.Message)"
     }
     Write-Verbose "Running VBoxManage to convert VMDK to VHD"
-    $Proc = Start-Process $VBoxManage -ArgumentList "clonehd $PackerFile $VHDPath --format vhd" -NoNewWindow -PassThru -Wait
+    $Proc = Start-Process $VBoxManageLocation -ArgumentList "clonehd $PackerFile $VHDPath --format vhd" -NoNewWindow -PassThru -Wait
     if ($Proc.ExitCode -ne 0)
     {
         Remove-Item $TempDir -Force -Recurse -ErrorAction SilentlyContinue
@@ -174,7 +196,7 @@ function ConvertTo-WIM
         Write-Warning "Failed to clear out VHD.$($_.Exception.Message)"
     }
     Write-Verbose "Running VBoxManage to remove $VHDPath"
-    $Remove = Start-Process $VBoxManage -ArgumentList "closemedium $vhdpath" -PassThru -NoNewWindow -Wait -ErrorAction Stop
+    $Remove = Start-Process $VBoxManageLocation -ArgumentList "closemedium $vhdpath" -PassThru -NoNewWindow -Wait -ErrorAction Stop
     if ($Remove.ExitCode -ne 0)
     {
         Write-Warning "VboxManage returned exit code: $($Remove.ExitCode).`n$($Remove.StandardError)"

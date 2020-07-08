@@ -8,3 +8,4 @@ param ()
 Import-Module "$PSScriptRoot\Provisioning\Provisioning.psm1"
 
 $env:PackerFilesPath = (get-item "$PSScriptRoot\..\packer")
+$env:BuildOutputPath = (get-item "$PSScriptRoot\output")

@@ -51,7 +51,7 @@ function Invoke-PackerBuild
         # The output directory to use
         [Parameter(Mandatory = $false)]
         [string]
-        $OutputPath = "$env:PackerFilesPath\output"
+        $OutputPath = "$env:BuildOutputPath"
     )
     if (!(Test-Path $TemplateDirectory))
     {
