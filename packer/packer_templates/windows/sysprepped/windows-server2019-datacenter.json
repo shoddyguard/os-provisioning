@@ -34,6 +34,7 @@
             ],
             "headless": "{{user `headless`}}",
             "boot_wait": "10m",
+            "vrdp_bind_address": "{{user `vrdp_bind_address`}}",
             "communicator": "winrm",
             "winrm_username": "{{ user `winrm_username` }}",
             "winrm_password": "{{ user `winrm_password` }}",
@@ -57,6 +58,7 @@
     ],
     "variables": {
         "headless": "true",
+        "vrdp_bind_address": "127.0.0.1",
         "iso_checksum": "",
         "iso_url": "../../../iso/server2019.iso",
         "output_directory": "../../../output/windows-server2019-datacenter",
