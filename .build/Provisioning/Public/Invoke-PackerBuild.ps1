@@ -43,6 +43,11 @@ function Invoke-PackerBuild
         [array]
         $PackerVariables,
 
+        # If set binds the VRDP port to 0.0.0.0
+        [Parameter(Mandatory = $false)]
+        [bool]
+        $ExposeVRDP = $true,
+
         # The directory that contains all the Packer templates
         [Parameter(Mandatory = $false)]
         [string]
@@ -98,6 +103,10 @@ function Invoke-PackerBuild
         {
             $Vars += "iso_checksum=$ISOChecksum"
         }
+    }
+    if ($ExposeVRDP)
+    {
+        $Vars += "vrdp_bind_address=0.0.0.0"
     }
     if ($PackerVariables)
     {
