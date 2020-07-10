@@ -1,7 +1,7 @@
 {
     "builders": [
         {
-            "name": "windows-server2019",
+            "name": "windows-server2019-standard-core-sysprepped",
             "type": "virtualbox-iso",
             "vboxmanage": [
                 [
